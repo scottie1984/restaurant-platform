@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "dependency": "docker-compose up",
     "start": "sls offline start -r us-east-1 --noTimeout",
-    "test": "mocha test/**/*test.js",
+    "test": "MONGO_DB=restaurants_test mocha test/**/*test.js",
     "pretest": "standard 'src/**/*.js' 'test/**/*.js'",
     "lint-fix": "standard 'src/**/*.js' 'test/**/*.js' --fix",
     "deploy": "NODE_ENV=production serverless deploy"
@@ -14,6 +15,7 @@
     "body-parser": "1.19.0",
     "express": "4.17.1",
     "lodash": "4.17.15",
+    "mongo-func": "0.0.11",
     "serverless": "1.67.0",
     "serverless-http": "2.3.2",
     "serverless-apigw-binary": "0.4.4"
