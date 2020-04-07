@@ -28,7 +28,7 @@ functions:
       MONGO_QRY: ${env:MONGO_QRY}
       MONGO_CONN_STR: ${env:MONGO_CONN_STR}
   privateapi:
-    handler: appServerless.handler
+    handler: appServerlessPrivate.handler
     events:
       - http: ANY /
         authorizer:
