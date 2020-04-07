@@ -17,7 +17,7 @@ app.get('/restaurants', async (req, res) => {
   res.send(restaurants)
 })
 
-app.post('/restaurant/create', async (req, res) => {
+app.post('/restaurants/create', async (req, res) => {
   await mongo.insertToRestaurants(req.body)()
   res.send({
     message: 'Restaurant inserted successfully'
