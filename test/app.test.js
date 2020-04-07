@@ -5,7 +5,6 @@ const assert = require('assert')
 const makeRequest = require('./make-request')
 
 describe('Ping', () => {
-
   it('should return message', async () => {
     const res = await makeRequest.get('/ping')
 

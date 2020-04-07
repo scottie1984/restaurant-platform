@@ -3,7 +3,7 @@ service: restautant-platform
 # The `provider` block defines where your service will be deployed
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.13
 
 plugins:
   - serverless-offline

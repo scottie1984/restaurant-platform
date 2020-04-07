@@ -15,3 +15,6 @@ workflows:
     build-test-deploy:
       jobs:
         - build-test-deploy
+          filters:
+            branches:
+              only: master
