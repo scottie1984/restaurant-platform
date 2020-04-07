@@ -2,20 +2,36 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
-  build-test-deploy:
+  build-public:
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
           steps:
+            - run: cd public
+            - run: npm install
+            - run: npm test
+            - run: ./node_modules/.bin/serverless deploy
+  build-private:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: cd private
             - run: npm install
             - run: npm test
             - run: ./node_modules/.bin/serverless deploy
 workflows:
     build-test-deploy:
       jobs:
-        - build-test-deploy:
+        - build-public:
+          filters:
+            branches:
+              only: master
+        - build-private:
           filters:
             branches:
               only: master

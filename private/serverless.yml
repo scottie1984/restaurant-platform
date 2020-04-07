@@ -1,0 +1,33 @@
+service: restautant-platform-private
+
+# The `provider` block defines where your service will be deployed
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+plugins:
+  - serverless-offline
+  - serverless-apigw-binary
+
+custom:
+  apigwBinary:
+    types:
+      - '*/*'
+
+# The `functions` block defines what code to deploy
+functions:
+  api:
+    handler: appServerlessPrivate.handler
+    events:
+      - http: ANY /
+        authorizer:
+          arn: 'arn:aws:cognito-idp:us-east-1:373909485123:userpool/us-east-1_nym9BKz1r'
+        cors: true
+      - http: 'ANY {proxy+}'
+        authorizer:
+          arn: 'arn:aws:cognito-idp:us-east-1:373909485123:userpool/us-east-1_nym9BKz1r'
+        cors: true
+    environment:
+      NODE_ENV: ${env:NODE_ENV}
+      MONGO_QRY: ${env:MONGO_QRY}
+      MONGO_CONN_STR: ${env:MONGO_CONN_STR}

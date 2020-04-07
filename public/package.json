@@ -1,0 +1,35 @@
+{
+  "name": "restaurant-platform",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dependency": "docker-compose up",
+    "start": "sls offline start -r us-east-1 --noTimeout",
+    "test": "MONGO_DB=restaurants_test mocha test/**/*test.js",
+    "pretest": "standard 'src/**/*.js' 'test/**/*.js'",
+    "lint-fix": "standard 'src/**/*.js' 'test/**/*.js' --fix"
+  },
+  "dependencies": {
+    "aws-sdk": "2.652.0",
+    "body-parser": "1.19.0",
+    "cors": "2.8.5",
+    "express": "4.17.1",
+    "lodash": "4.17.15",
+    "mongo-func": "0.0.11",
+    "serverless": "1.67.0",
+    "serverless-http": "2.3.2",
+    "serverless-apigw-binary": "0.4.4"
+  },
+  "devDependencies": {
+    "mocha": "7.1.1",
+    "serverless-offline": "6.1.2",
+    "sinon": "9.0.1",
+    "standard": "14.3.3",
+    "supertest": "4.0.2"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  }
+}
