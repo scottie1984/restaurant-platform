@@ -28,6 +28,6 @@ functions:
           arn: 'arn:aws:cognito-idp:us-east-1:373909485123:userpool/us-east-1_nym9BKz1r'
         cors: true
     environment:
-      NODE_ENV: ${env:NODE_ENV}
+      ENV_CONFIG: ${env:ENV_CONFIG}
       MONGO_QRY: ${env:MONGO_QRY}
       MONGO_CONN_STR: ${env:MONGO_CONN_STR}
