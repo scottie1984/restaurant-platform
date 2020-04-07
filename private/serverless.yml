@@ -20,15 +20,15 @@ functions:
     handler: appServerless.handler
     events:
       - http:
-        method: ANY
         path: /
+        method: ANY
         authorizer:
           name: authorizer
           arn: arn:aws:cognito-idp:us-east-1:373909485123:userpool/us-east-1_nym9BKz1r
         cors: true
       - http:
-        method: ANY
         path: {proxy+}
+        method: ANY
         authorizer:
           name: authorizer
           arn: arn:aws:cognito-idp:us-east-1:373909485123:userpool/us-east-1_nym9BKz1r
