@@ -17,7 +17,7 @@ custom:
 # The `functions` block defines what code to deploy
 functions:
   api:
-    handler: appServerlessPrivate.handler
+    handler: appServerless.handler
     events:
       - http: ANY /
         authorizer:
