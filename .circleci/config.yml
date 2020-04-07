@@ -11,7 +11,7 @@ jobs:
           steps:
             - run: npm install
             - run: npm test
-            - run: MONGO_QRY=${env.MONGO_QRY} MONGO_CONN=${env.MONGO_CONN} NODE_ENV=production ./node_modules/.bin/serverless deploy
+            - run: MONGO_QRY=${env:MONGO_QRY} MONGO_CONN=${env:MONGO_CONN} NODE_ENV=production ./node_modules/.bin/serverless deploy
 workflows:
     build-test-deploy:
       jobs:
