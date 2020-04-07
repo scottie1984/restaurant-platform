@@ -1,0 +1,25 @@
+service: restautant-platform
+
+# The `provider` block defines where your service will be deployed
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+plugins:
+  - serverless-offline
+  - serverless-apigw-binary
+
+custom:
+  apigwBinary:
+    types:
+      - '*/*'
+
+# The `functions` block defines what code to deploy
+functions:
+  api:
+    handler: appServerless.handler
+    events:
+      - http: ANY /
+        cors: true
+      - http: 'ANY {proxy+}'
+        cors: true
