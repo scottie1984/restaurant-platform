@@ -1,7 +1,7 @@
 'use strict'
 const express = require('express')
 const bodyParser = require('body-parser')
-const cors = require('cors');
+const cors = require('cors')
 const mongo = require('./mongo')
 
 const whitelist = ['http://localhost:8000']
