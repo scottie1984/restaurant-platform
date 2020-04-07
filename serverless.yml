@@ -24,6 +24,6 @@ functions:
       - http: 'ANY {proxy+}'
         cors: true
     environment:
-      NODE_ENV: ${env:MONGO_QRY}
+      NODE_ENV: ${env:NODE_ENV}
       MONGO_QRY: ${env:MONGO_QRY}
       MONGO_CONN_STR: ${env:MONGO_CONN_STR}
