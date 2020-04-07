@@ -7,8 +7,7 @@
     "start": "sls offline start -r us-east-1 --noTimeout",
     "test": "MONGO_DB=restaurants_test mocha test/**/*test.js",
     "pretest": "standard 'src/**/*.js' 'test/**/*.js'",
-    "lint-fix": "standard 'src/**/*.js' 'test/**/*.js' --fix",
-    "deploy": "NODE_ENV=production serverless deploy"
+    "lint-fix": "standard 'src/**/*.js' 'test/**/*.js' --fix"
   },
   "dependencies": {
     "aws-sdk": "2.652.0",
