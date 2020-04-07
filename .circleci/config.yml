@@ -1,4 +1,5 @@
 version: 2.1
+
 orbs:
   node: circleci/node@1.1.6
 jobs:
@@ -8,8 +9,8 @@ jobs:
     steps:
       - checkout
       - node/with-cache:
+          working_directory: './public'
           steps:
-            - run: cd public
             - run: npm install
             - run: npm test
             - run: ./node_modules/.bin/serverless deploy
@@ -19,8 +20,8 @@ jobs:
     steps:
       - checkout
       - node/with-cache:
+          working_directory: './private'
           steps:
-            - run: cd private
             - run: npm install
             - run: npm test
             - run: ./node_modules/.bin/serverless deploy
