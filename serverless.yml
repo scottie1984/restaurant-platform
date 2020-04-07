@@ -27,4 +27,4 @@ functions:
     environment:
       NODE_ENV: ${env:NODE_ENV}
       MONGO_QRY: ${env:MONGO_QRY}
-      MONGO_CONN: ${env:MONGO_CONN}
+      MONGO_CONN_STR: ${env:MONGO_CONN}
