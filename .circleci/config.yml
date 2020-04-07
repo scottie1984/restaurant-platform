@@ -4,23 +4,23 @@ orbs:
   node: circleci/node@1.1.6
 jobs:
   build-public:
+    working_directory: './public'
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
-          working_directory: './public'
           steps:
             - run: npm install
             - run: npm test
             - run: ./node_modules/.bin/serverless deploy
   build-private:
+    working_directory: './private'
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
-          working_directory: './private'
           steps:
             - run: npm install
             - run: npm test
