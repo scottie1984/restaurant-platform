@@ -6,7 +6,8 @@
     "start": "sls offline start -r us-east-1 --noTimeout",
     "test": "mocha test/**/*test.js",
     "pretest": "standard 'src/**/*.js' 'test/**/*.js' --",
-    "lint-fix": "standard 'src/**/*.js' 'test/**/*.js' --fix"
+    "lint-fix": "standard 'src/**/*.js' 'test/**/*.js' --fix",
+    "deploy": "NODE_ENV=production serverless deploy"
   },
   "dependencies": {
     "aws-sdk": "2.652.0",
