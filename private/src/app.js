@@ -31,6 +31,7 @@ app.get('/ping', publicCors, (req, res) => {
 })
 
 app.get('/restaurants', publicCors, async (req, res) => {
+  console.log('event.requestContext.authorizer.claims.email', req.event.requestContext.authorizer)
   const restaurants = await mongo.finderFromRestaurantsEmpty()
   res.send(restaurants)
 })
