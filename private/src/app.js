@@ -22,6 +22,8 @@ const publicCors = cors()
 const app = express()
 app.use(bodyParser.json())
 
+app.options('*', adminCors)
+
 app.get('/ping', publicCors, (req, res) => {
   res.send({
     message: 'Welcome to the internet!'
