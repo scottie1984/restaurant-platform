@@ -6,6 +6,7 @@ const app = require('../src/app')
 function get (resource) {
   return request(app)
     .get(resource)
+    .set('Origin', 'http://localhost:3000')
 }
 
 function post (resource, body) {
