@@ -37,3 +37,15 @@ functions:
       ENV_CONFIG: ${env:ENV_CONFIG}
       MONGO_QRY: ${env:MONGO_QRY}
       MONGO_CONN_STR: ${env:MONGO_CONN_STR}
+
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
