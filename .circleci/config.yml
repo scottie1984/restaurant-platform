@@ -10,6 +10,8 @@ orbs:
 jobs:
   build-public:
     working_directory: ~/public
+    docker: # run the steps with Docker
+      - image: circleci/node:10.16.3 # ...with this image as the primary container; this is where all `steps` will run
     steps:
       - checkout
       - run: npm install
