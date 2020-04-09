@@ -4,6 +4,11 @@ service: restautant-platform-private
 provider:
   name: aws
   runtime: nodejs10.x
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ses:SendEmail"
+      Resource: "*"
 
 plugins:
   - serverless-offline
