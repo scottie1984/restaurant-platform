@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "sls offline start -r us-east-1 --noTimeout",
-    "test": "MONGO_CONN_STR=mongodb://localhost:27017/ MONGO_DB=restaurants_test mocha test/**/*test.js",
+    "test": "MONGO_DB=restaurants_test mocha test/**/*test.js",
     "pretest": "standard 'src/**/*.js' 'test/**/*.js'",
     "lint-fix": "standard 'src/**/*.js' 'test/**/*.js' --fix"
   },

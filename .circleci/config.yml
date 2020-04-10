@@ -12,7 +12,6 @@ jobs:
     working_directory: ~/public-api
     docker: # run the steps with Docker
       - image: circleci/node:10.16.3 # ...with this image as the primary container; this is where all `steps` will run
-      - image: mongo:4.2.0
     steps:
       - checkout
       - run: cd public-api && npm install
