@@ -2,31 +2,31 @@ version: 2.1
 
 dependencies:
   cache_directories:
-    - private/node_modules
-    - public/node_modules
+    - restaurants-api/node_modules
+    - public-api/node_modules
 
 orbs:
   node: circleci/node@1.1.6
 jobs:
   build-public:
-    working_directory: ~/public
+    working_directory: ~/public-api
     docker: # run the steps with Docker
       - image: circleci/node:10.16.3 # ...with this image as the primary container; this is where all `steps` will run
     steps:
       - checkout
-      - run: cd public && npm install
-      - run: cd public && npm test
-      - run: cd public && ./node_modules/.bin/serverless deploy
+      - run: cd public-api && npm install
+      - run: cd public-api && npm test
+      - run: cd public-api && ./node_modules/.bin/serverless deploy
             
   build-private:
-    working_directory: ~/private
+    working_directory: ~/restaurants-api
     docker: # run the steps with Docker
       - image: circleci/node:10.16.3 # ...with this image as the primary container; this is where all `steps` will run
     steps:
       - checkout
-      - run: cd private && npm install
-      - run: cd private && npm test
-      - run: cd private && ./node_modules/.bin/serverless deploy
+      - run: cd restaurants-api && npm install
+      - run: cd restaurants-api && npm test
+      - run: cd restaurants-api && ./node_modules/.bin/serverless deploy
             
 workflows:
     build-test-deploy:
