@@ -15,7 +15,18 @@ const finderFromRestaurantsEmpty = finderFromRestaurants({})
 const inserter = mf.insert(MONGO_CONN)
 const insertToRestaurants = inserter(restaurantsCollection)
 
+const remover = mf.remove(MONGO_CONN)
+const deleteRestaurants = remover(restaurantsCollection)
+const deleteAllRestaurants = deleteRestaurants({})
+
+const close = async () => {
+  const db = await mf.getConnection(MONGO_CONN)
+  db.close()
+}
+
 module.exports = {
   finderFromRestaurantsEmpty,
-  insertToRestaurants
+  insertToRestaurants,
+  deleteAllRestaurants,
+  close
 }

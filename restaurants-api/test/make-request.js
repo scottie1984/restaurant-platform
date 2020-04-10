@@ -13,6 +13,7 @@ function post (resource, body) {
   return request(app)
     .post(resource)
     .send(body)
+    .set('Origin', 'http://localhost:3000')
 }
 
 module.exports = {

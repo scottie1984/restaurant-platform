@@ -5,6 +5,7 @@ const cors = require('cors')
 const aws = require('aws-sdk')
 const ses = new aws.SES()
 const mongo = require('./mongo')
+const _ = require('lodash')
 
 const whitelist = ['http://localhost:8000', 'http://localhost:3000', 'https://master.d2gtcpj8lj87zj.amplifyapp.com/']
 const corsOptions = {
@@ -25,7 +26,7 @@ app.use(bodyParser.json())
 
 app.options('*', cors())
 
-const getEmail = req => req.event.requestContext.authorizer.claims.email
+const getEmail = req => _.get(req, 'event.requestContext.authorizer.claims.email', 'default@email.com')
 
 app.get('/ping', adminCors, (req, res) => {
   res.send({
