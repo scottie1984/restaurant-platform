@@ -32,7 +32,7 @@ describe('Create restaurant', () => {
     await mongo.close()
   })
 
-  it('should return a list of restaurants', async () => {
+  it('should insert a restaurant', async () => {
     const res = await makeRequest.post('/restaurants/create', { name: 'simply-the-best' })
 
     assert.strictEqual(res.status, 200)
