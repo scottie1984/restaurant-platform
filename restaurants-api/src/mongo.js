@@ -26,6 +26,7 @@ const close = async () => {
 
 module.exports = {
   finderFromRestaurantsEmpty,
+  finderFromRestaurants,
   insertToRestaurants,
   deleteAllRestaurants,
   close

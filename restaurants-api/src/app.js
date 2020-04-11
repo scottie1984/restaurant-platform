@@ -36,7 +36,7 @@ app.get('/ping', adminCors, (req, res) => {
 
 app.get('/restaurants', adminCors, async (req, res) => {
   const signupEmail = getEmail(req)
-  const restaurants = await mongo.finderFromRestaurantsEmpty()
+  const restaurants = await mongo.finderFromRestaurants({ signupEmail })()
   const response = {
     signupEmail,
     restaurants
