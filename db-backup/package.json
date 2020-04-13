@@ -1,0 +1,9 @@
+{
+    "name": "mongo-s3-backup",
+    "version": "1.0.0",
+    "description": "Backup DB",
+    "dependencies": {
+      "dayjs": "^1.7.8",
+      "zip-a-folder": "0.0.7"
+    }
+  }

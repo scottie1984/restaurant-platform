@@ -1,0 +1,16 @@
+service: mongo-s3-backup
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+functions:
+  cron:
+    handler: handler.run
+    events:
+      # Invoke Lambda function every day at 6pm
+      - schedule: cron(0 18 * * ? *)
+    environment:
+      MONGO_QRY: ${env:MONGO_QRY}
+      MONGO_CONN_STR: ${env:MONGO_CONN_STR}
+      S3_BUCKET: ${env:S3_BUCKET}
