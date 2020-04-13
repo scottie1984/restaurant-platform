@@ -27,7 +27,7 @@ module.exports.run = function(event, context, cb) {
   let folderName = `/tmp/${fileName}/`;
   let filePath = `/tmp/${fileName}.zip`;
 
-  exec(`mongodump --uri="${MONGO_CONN}"`, (error, stdout, stderr) => {
+  exec(`mongodump --uri="${MONGO_CONN}" -o ${folderName}`, (error, stdout, stderr) => {
 
       if (error) {
         console.log('Mongodump failed: ' + error);
