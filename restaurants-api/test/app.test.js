@@ -64,4 +64,44 @@ describe('Restuarants API', () => {
       assert.deepStrictEqual(res.body.restaurants[1].name, 'best-best-ever')
     })
   })
+
+  describe('Patch restaurant', () => {
+    before(async () => {
+      await mongo.deleteAllRestaurants()
+    })
+
+    it('should patch a restaurant', async () => {
+      const { body } = await makeRequest.post('/restaurants/create', { name: 'simply-the-best' })
+      const res = await makeRequest.post('/restaurants/patch/' + body.doc._id, { status: 'approved' })
+      assert.strictEqual(res.status, 200)
+
+      const restaurants = await mongo.finderFromRestaurantsEmpty()
+
+      assert.strictEqual(restaurants.length, 1)
+      assert.strictEqual(restaurants[0].name, 'simply-the-best')
+      assert.strictEqual(restaurants[0].signupEmail, 'default@email.com')
+      assert.strictEqual(restaurants[0].status, 'approved')
+      assert.ok(aws.SES.called)
+    })
+  })
+
+  describe('Update restaurant', () => {
+    before(async () => {
+      await mongo.deleteAllRestaurants()
+    })
+
+    it('should overwrite a restaurant', async () => {
+      const { body } = await makeRequest.post('/restaurants/create', { name: 'simply-the-best' })
+      const res = await makeRequest.post('/restaurants/update/' + body.doc._id, { status: 'approved' })
+      assert.strictEqual(res.status, 200)
+
+      const restaurants = await mongo.finderFromRestaurantsEmpty()
+
+      assert.strictEqual(restaurants.length, 1)
+      assert.strictEqual(restaurants[0].name, undefined)
+      assert.strictEqual(restaurants[0].signupEmail, 'default@email.com')
+      assert.strictEqual(restaurants[0].status, 'approved')
+      assert.ok(aws.SES.called)
+    })
+  })
 })

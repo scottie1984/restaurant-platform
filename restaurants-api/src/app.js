@@ -75,10 +75,34 @@ app.post('/restaurants/create', adminCors, async (req, res) => {
     signupEmail,
     ...req.body
   }
-  await mongo.insertToRestaurants(data)()
+  const { ops } = await mongo.insertToRestaurants(data)()
   await sendWelcomeEmail(signupEmail)
   res.send({
-    message: 'Restaurant inserted successfully'
+    message: 'Restaurant inserted successfully',
+    doc: ops[0]
+  })
+})
+
+app.post('/restaurants/patch/:id', adminCors, async (req, res) => {
+  const signupEmail = getEmail(req)
+  const id = req.params.id
+  const data = req.body
+  await mongo.updateByIdToRestaurants({ $set: data })(id, signupEmail)
+  res.send({
+    message: 'Restaurant patched successfully'
+  })
+})
+
+app.post('/restaurants/update/:id', adminCors, async (req, res) => {
+  const signupEmail = getEmail(req)
+  const id = req.params.id
+  const data = {
+    signupEmail,
+    ...req.body
+  }
+  await mongo.updateByIdToRestaurants(data)(id, signupEmail)
+  res.send({
+    message: 'Restaurant patched successfully'
   })
 })
 
