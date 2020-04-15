@@ -14,7 +14,7 @@ functions:
     handler: handler.run
     events:
       # Invoke Lambda function every day at 6pm
-      - schedule: cron(0 18 * * ? *)
+      - schedule: cron(0 01 * * ? *)
     environment:
       MONGO_QRY: ${env:MONGO_QRY}
       MONGO_CONN_STR: ${env:MONGO_CONN_STR}
