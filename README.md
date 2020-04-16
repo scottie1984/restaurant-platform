@@ -40,6 +40,10 @@ npm test
 
 Please look at the tests folder within each folder to view how to call each endpoint
 
+Images - uploaded images can be found in the following bucket for rendering to public:
+
+https://loql-images.s3.us-east-1.amazonaws.com/<image_id>
+
 
 ## CI
 
