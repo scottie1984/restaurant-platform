@@ -8,7 +8,7 @@ provider:
     - Effect: "Allow"
       Action:
         - "ses:SendEmail"
-        - “s3:*"
+        - "s3:*"
       Resource: "*"
 
 plugins:
