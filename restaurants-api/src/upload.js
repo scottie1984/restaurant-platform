@@ -4,7 +4,7 @@ const shortid = require('shortid')
 
 const client = s3.createClient({})
 
-function uploadToS3 (id, file) {
+function uploadToS3 (file) {
   return new Promise((resolve, reject) => {
     const uploadKey = shortid.generate()
     const params = {
@@ -12,7 +12,7 @@ function uploadToS3 (id, file) {
 
       s3Params: {
         Bucket: 'loql-images',
-        Key: id + '/' + uploadKey
+        Key: uploadKey
       }
     }
     const uploader = client.uploadFile(params)

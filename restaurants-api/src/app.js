@@ -70,16 +70,24 @@ function sendWelcomeEmail (email) {
   return ses.sendEmail(emailParams).promise()
 }
 
+async function processFIles (inputFiles) {
+  const files = {}
+  if (inputFiles) {
+    const keys = Object.keys(inputFiles)
+    for (const key of keys) {
+      const data = await upload.uploadToS3(inputFiles[key])
+      files[key] = data.id
+    }
+  }
+  return files
+}
+
 const multipart = require('connect-multiparty')
 const multipartMiddleware = multipart()
 
 app.post('/restaurants/create', adminCors, multipartMiddleware, async (req, res) => {
   const signupEmail = getEmail(req)
-  const files = {}
-  if (req.files && req.files.logo) {
-    const data = await upload.uploadToS3('an-id', req.files.logo)
-    files.logoId = data.id
-  }
+  const files = await processFIles(req.files)
   const data = {
     signupEmail,
     ...req.body,
