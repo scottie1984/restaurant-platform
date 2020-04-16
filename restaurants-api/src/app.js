@@ -6,6 +6,7 @@ const aws = require('aws-sdk')
 const ses = new aws.SES()
 const mongo = require('./mongo')
 const _ = require('lodash')
+const upload = require('./upload')
 
 const whitelist = ['http://localhost:8000', 'http://localhost:3000', 'https://master.d2gtcpj8lj87zj.amplifyapp.com/']
 const corsOptions = {
@@ -69,11 +70,20 @@ function sendWelcomeEmail (email) {
   return ses.sendEmail(emailParams).promise()
 }
 
-app.post('/restaurants/create', adminCors, async (req, res) => {
+const multipart = require('connect-multiparty')
+const multipartMiddleware = multipart()
+
+app.post('/restaurants/create', adminCors, multipartMiddleware, async (req, res) => {
   const signupEmail = getEmail(req)
+  const files = {}
+  if (req.files && req.files.logo) {
+    const data = await upload.uploadToS3('an-id', req.files.logo)
+    files.logoId = data.id
+  }
   const data = {
     signupEmail,
-    ...req.body
+    ...req.body,
+    ...files
   }
   const { ops } = await mongo.insertToRestaurants(data)()
   await sendWelcomeEmail(signupEmail)
