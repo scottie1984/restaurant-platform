@@ -11,7 +11,7 @@ const upload = require('./upload')
 const whitelist = ['http://localhost:8000', 'http://localhost:3000', 'https://master.d2gtcpj8lj87zj.amplifyapp.com/']
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))
