@@ -57,3 +57,7 @@ https://596xiw10i2.execute-api.us-east-1.amazonaws.com/dev/
 restaurants-api
 https://1moce99ue8.execute-api.us-east-1.amazonaws.com/dev/
 
+## Stripe testing
+
+https://stripe.com/docs/testing
+

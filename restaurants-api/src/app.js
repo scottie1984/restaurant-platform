@@ -151,7 +151,7 @@ app.post('/charge', adminCors, async (req, res) => {
 
   const charge = await stripe.charges.create({
     amount,
-    currency: 'usd',
+    currency: 'gbp',
     source,
     receipt_email: signupEmail
   }, { stripeAccount: restaurantDetails.stripeId })
