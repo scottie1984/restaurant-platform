@@ -6,6 +6,8 @@ const aws = require('aws-sdk')
 const ses = new aws.SES()
 const mongo = require('./mongo')
 const _ = require('lodash')
+const STRIPE_KEY = process.env.STRIPE_KEY
+const stripe = require('stripe')(STRIPE_KEY)
 const upload = require('./upload')
 
 const whitelist = ['http://localhost:8000', 'http://localhost:3000', 'https://master.d2gtcpj8lj87zj.amplifyapp.com/']
@@ -121,6 +123,21 @@ app.post('/restaurants/update/:id', adminCors, async (req, res) => {
   await mongo.updateByIdToRestaurants(data)(id, signupEmail)
   res.send({
     message: 'Restaurant patched successfully'
+  })
+})
+
+app.post('/connect/:id', adminCors, async (req, res) => {
+  const signupEmail = getEmail(req)
+  const id = req.params.id
+  const response = await stripe.oauth.token({
+    grant_type: 'authorization_code',
+    code: req.body.code
+  })
+
+  const connectedAccountId = response.stripe_user_id
+  await mongo.updateByIdToRestaurants({ $set: { stripeId: connectedAccountId } })(id, signupEmail)
+  res.send({
+    message: 'Restaurant connected successfully'
   })
 })
 

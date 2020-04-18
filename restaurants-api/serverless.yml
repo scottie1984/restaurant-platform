@@ -61,6 +61,7 @@ functions:
       ENV_CONFIG: ${env:ENV_CONFIG}
       MONGO_QRY: ${env:MONGO_QRY}
       MONGO_CONN_STR: ${env:MONGO_CONN_STR}
+      STRIPE_KEY: ${env:STRIPE_KEY}
 
 resources:
   Resources:

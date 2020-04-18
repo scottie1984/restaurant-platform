@@ -21,7 +21,8 @@
     "serverless-http": "2.3.2",
     "serverless-apigw-binary": "0.4.4",
     "s3": "4.4.0",
-    "shortid": "2.2.15"
+    "shortid": "2.2.15",
+    "stripe": "8.44.0"
   },
   "devDependencies": {
     "mocha": "7.1.1",
