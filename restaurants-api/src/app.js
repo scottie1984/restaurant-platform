@@ -141,4 +141,25 @@ app.post('/connect/:id', adminCors, async (req, res) => {
   })
 })
 
+app.post('/charge', adminCors, async (req, res) => {
+  const signupEmail = getEmail(req)
+  const { amount, source, restaurantId } = req.body
+
+  console.log('req.body', req.body)
+  const restaurantDetails = await mongo.fineOneByIdRestaurants()(restaurantId)
+  console.log('rrestaurantDetails', restaurantDetails)
+
+  const charge = await stripe.charges.create({
+    amount,
+    currency: 'usd',
+    source,
+    receipt_email: signupEmail
+  }, { stripeAccount: restaurantDetails.stripeId })
+
+  res.status(200).json({
+    message: 'charge posted successfully',
+    charge
+  })
+})
+
 module.exports = app

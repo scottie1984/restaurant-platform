@@ -1,6 +1,7 @@
 const mf = require('mongo-func')
 const ObjectID = require('mongodb').ObjectID
-const byId = (id, signupEmail) => ({ _id: new ObjectID(id), signupEmail })
+const byIdEmail = (id, signupEmail) => ({ _id: new ObjectID(id), signupEmail })
+const byId = id => ({ _id: new ObjectID(id) })
 
 const MONGO_CONN_STR = process.env.ENV_CONFIG === 'PROD' ? process.env.MONGO_CONN_STR : 'mongodb://localhost:27017/'
 const MONDO_DB = process.env.MONGO_DB || 'restaurants_platform'
@@ -9,6 +10,10 @@ const MONGO_QRY = process.env.ENV_CONFIG === 'PROD' ? process.env.MONGO_QRY : ''
 const MONGO_CONN = MONGO_CONN_STR + MONDO_DB + '?' + MONGO_QRY
 
 const restaurantsCollection = 'restaurants'
+
+const findOner = mf.findOne(MONGO_CONN)
+const findOneFromRestaurants = findOner(restaurantsCollection)
+const fineOneByIdRestaurants = findOneFromRestaurants(byId)
 
 const finder = mf.find(MONGO_CONN)
 const finderFromRestaurants = finder(restaurantsCollection)
@@ -23,7 +28,7 @@ const deleteAllRestaurants = deleteRestaurants({})
 
 const updater = mf.update(MONGO_CONN)
 const updateToRestaurants = updater(restaurantsCollection)
-const updateByIdToRestaurants = updateToRestaurants(byId)
+const updateByIdToRestaurants = updateToRestaurants(byIdEmail)
 
 const close = async () => {
   const db = await mf.getConnection(MONGO_CONN)
@@ -36,5 +41,6 @@ module.exports = {
   insertToRestaurants,
   deleteAllRestaurants,
   close,
-  updateByIdToRestaurants
+  updateByIdToRestaurants,
+  fineOneByIdRestaurants
 }
