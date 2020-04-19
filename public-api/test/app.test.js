@@ -15,7 +15,7 @@ describe('Ping', () => {
 })
 
 describe('Get restaurants', () => {
-  before(async () => {
+  beforeEach(async () => {
     await mongo.deleteAllRestaurants()
   })
 
@@ -32,5 +32,15 @@ describe('Get restaurants', () => {
     assert.deepStrictEqual(res.body.length, 2)
     assert.deepStrictEqual(res.body[0].name, 'best-ever')
     assert.deepStrictEqual(res.body[1].name, 'best-best-ever')
+  })
+
+  it('should hide stripe details from FE', async () => {
+    await mongo.insertToRestaurants({ name: 'best-ever', stripeId: '12345' })()
+    const res = await makeRequest.get('/restaurants')
+
+    assert.strictEqual(res.status, 200)
+    assert.deepStrictEqual(res.body.length, 1)
+    assert.deepStrictEqual(res.body[0].name, 'best-ever')
+    assert.deepStrictEqual(res.body[0].stripeId, undefined)
   })
 })

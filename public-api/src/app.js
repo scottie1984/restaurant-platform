@@ -3,6 +3,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongo = require('./mongo')
+const _ = require('lodash')
 
 const publicCors = cors()
 
@@ -17,7 +18,8 @@ app.get('/ping', publicCors, (req, res) => {
 
 app.get('/restaurants', publicCors, async (req, res) => {
   const restaurants = await mongo.finderFromRestaurantsEmpty()
-  res.send(restaurants)
+  const publicRestaurantDetails = restaurants.map(r => _.omit(r, ['stripeId']))
+  res.send(publicRestaurantDetails)
 })
 
 module.exports = app
