@@ -10,7 +10,7 @@ const STRIPE_KEY = process.env.STRIPE_KEY
 const stripe = require('stripe')(STRIPE_KEY)
 const upload = require('./upload')
 
-const whitelist = ['http://localhost:8000', 'http://localhost:3000', 'https://master.d2gtcpj8lj87zj.amplifyapp.com/']
+const whitelist = ['http://localhost:8000', 'http://localhost:3000', 'https://master.d2gtcpj8lj87zj.amplifyapp.com/', 'https://www.loql.io']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
