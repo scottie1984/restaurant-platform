@@ -22,6 +22,10 @@ describe('Restuarants API', () => {
     await mongo.close()
   })
 
+  afterEach(() => {
+    sandbox.resetHistory()
+  })
+
   describe('Ping', () => {
     it('should return message', async () => {
       const res = await makeRequest.get('/ping')
@@ -48,6 +52,32 @@ describe('Restuarants API', () => {
       assert.strictEqual(restaurants[0].name, 'simply-the-best')
       assert.strictEqual(restaurants[0].signupEmail, 'default@email.com')
       // assert.ok(aws.SES.called)
+    })
+
+    it('should create a order counter for a restaurant', async () => {
+      const res = await makeRequest.post('/restaurants/create', { name: 'simply-the-best' })
+      const restaurantId = res.body.doc._id.toString()
+
+      const counter = await mongo.getSequence(restaurantId)
+
+      assert.strictEqual(counter.sequence_value, 0)
+      assert.strictEqual(counter.sequenceName, restaurantId)
+    })
+
+    it('should create a multiple order counters for a restaurant', async () => {
+      const res1 = await makeRequest.post('/restaurants/create', { name: 'simply-the-best' })
+      const restaurantId1 = res1.body.doc._id.toString()
+
+      const res2 = await makeRequest.post('/restaurants/create', { name: 'simply-the-best' })
+      const restaurantId2 = res2.body.doc._id.toString()
+
+      const counter1 = await mongo.getSequence(restaurantId1)
+      assert.strictEqual(counter1.sequence_value, 0)
+      assert.strictEqual(counter1.sequenceName, restaurantId1)
+
+      const counter2 = await mongo.getSequence(restaurantId2)
+      assert.strictEqual(counter2.sequence_value, 0)
+      assert.strictEqual(counter2.sequenceName, restaurantId2)
     })
   })
 
@@ -129,12 +159,78 @@ describe('Restuarants API', () => {
       assert.strictEqual(order.restaurantId, body.doc._id)
       assert.strictEqual(order.amount, 1)
       assert.deepStrictEqual(order.basket, ['a', 'b', 'c'])
-      assert.strictEqual(order.stripeChargeId, 'stripe-payment-id')
       assert.strictEqual(order.signupEmail, 'default@email.com')
-      assert.strictEqual(order.stripeReceiptUrl, 'receipt-url')
       assert.strictEqual(order.status, 'OPEN')
+    })
+
+    it('should call stripe if vendor has stripe setup', async () => {
+      const { body } = await makeRequest.post('/restaurants/create', { name: 'simply-the-best', stripeId: '123' })
+      const res = await makeRequest.post('/charge', { restaurantId: body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      const order = res.body.order
+
+      assert.strictEqual(order.stripeChargeId, 'stripe-payment-id')
+      assert.strictEqual(order.stripeReceiptUrl, 'receipt-url')
 
       assert.ok(stripe.charge.called)
+    })
+
+    it('should not call stripe if vendor has not setup stripe', async () => {
+      const { body } = await makeRequest.post('/restaurants/create', { name: 'simply-the-best' })
+      const res = await makeRequest.post('/charge', { restaurantId: body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      const order = res.body.order
+
+      assert.strictEqual(order.stripeChargeId, undefined)
+      assert.strictEqual(order.stripeReceiptUrl, undefined)
+
+      assert.strictEqual(stripe.charge.called, false)
+    })
+
+    it('should increment the order number', async () => {
+      const { body } = await makeRequest.post('/restaurants/create', { name: 'simply-the-best', stripeId: '123' })
+      const res = await makeRequest.post('/charge', { restaurantId: body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      const order = res.body.order
+
+      assert.strictEqual(order.orderNum, 1)
+    })
+
+    it('should increment the order number for 2 orders', async () => {
+      const { body } = await makeRequest.post('/restaurants/create', { name: 'simply-the-best', stripeId: '123' })
+
+      const res1 = await makeRequest.post('/charge', { restaurantId: body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res1.body.order.orderNum, 1)
+
+      const res2 = await makeRequest.post('/charge', { restaurantId: body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res2.body.order.orderNum, 2)
+    })
+
+    it('should increment the order number for 3 orders', async () => {
+      const { body } = await makeRequest.post('/restaurants/create', { name: 'simply-the-best', stripeId: '123' })
+
+      const res1 = await makeRequest.post('/charge', { restaurantId: body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res1.body.order.orderNum, 1)
+
+      const res2 = await makeRequest.post('/charge', { restaurantId: body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res2.body.order.orderNum, 2)
+
+      const res3 = await makeRequest.post('/charge', { restaurantId: body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res3.body.order.orderNum, 3)
+    })
+
+    it('should take orders for multiple vendors', async () => {
+      const rest1 = await makeRequest.post('/restaurants/create', { name: 'simply-the-best', stripeId: '123' })
+      const rest2 = await makeRequest.post('/restaurants/create', { name: 'simply-the-bestest', stripeId: '123' })
+
+      const res1 = await makeRequest.post('/charge', { restaurantId: rest1.body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res1.body.order.orderNum, 1)
+
+      const res2 = await makeRequest.post('/charge', { restaurantId: rest2.body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res2.body.order.orderNum, 1)
+
+      const res3 = await makeRequest.post('/charge', { restaurantId: rest1.body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res3.body.order.orderNum, 2)
+
+      const res4 = await makeRequest.post('/charge', { restaurantId: rest2.body.doc._id, source: 'stripe-source', amount: 1, basket: ['a', 'b', 'c'] })
+      assert.strictEqual(res4.body.order.orderNum, 2)
     })
   })
 

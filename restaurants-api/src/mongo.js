@@ -61,19 +61,28 @@ const deleteAllCounters = deleteCounters({})
 
 const getNextSequenceValue = async sequenceName => {
   const db = await mf.getConnection(MONGO_CONN)
-  const sequenceDocument = await db.counters.findAndModify({
-    query: { sequenceName },
-    update: { $inc: { sequence_value: 1 } },
-    new: true
-  })
-  return sequenceDocument.sequence_value
+  const doc = await db.collection('counters').findAndModify(
+    { sequenceName },
+    [],
+    { $inc: { sequence_value: 1 } },
+    { new: true }
+  )
+  const value = doc.value || { sequence_value: 0 }
+  return value.sequence_value
 }
 
 const startSequence = async sequenceName => {
   const db = await mf.getConnection(MONGO_CONN)
-  await db.counters.insert({
+  await db.collection('counters').insertOne({
     sequenceName,
     sequence_value: 0
+  })
+}
+
+const getSequence = async sequenceName => {
+  const db = await mf.getConnection(MONGO_CONN)
+  return db.collection('counters').findOne({
+    sequenceName
   })
 }
 
@@ -95,5 +104,6 @@ module.exports = {
   deleteAllCounters,
   startSequence,
   getNextSequenceValue,
+  getSequence,
   close
 }

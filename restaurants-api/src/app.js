@@ -104,6 +104,7 @@ app.post('/restaurants/create', adminCors, async (req, res) => {
     ...req.body
   }
   const { ops } = await mongo.insertToRestaurants(data)()
+  await mongo.startSequence(ops[0]._id.toString())
   res.send({
     message: 'Restaurant inserted successfully',
     doc: ops[0]
@@ -149,9 +150,14 @@ app.post('/charge', adminCors, async (req, res) => {
 
   const { stripeId } = await mongo.fineOneByIdRestaurants()(restaurantId)
 
-  const charge = await stripe.charge({ amount, source, signupEmail, stripeId })
+  let charge = {}
+  if (stripeId) {
+    charge = await stripe.charge({ amount, source, signupEmail, stripeId })
+  }
 
   const orderDetails = _.omit(req.body, ['source'])
+
+  const orderNum = await mongo.getNextSequenceValue(restaurantId)
 
   const order = {
     ...orderDetails,
@@ -159,7 +165,8 @@ app.post('/charge', adminCors, async (req, res) => {
     stripeChargeId: charge.id,
     stripeReceiptUrl: charge.receipt_url,
     signupEmail,
-    status: 'OPEN'
+    status: 'OPEN',
+    orderNum
   }
 
   await mongo.insertToOrders(order)()
