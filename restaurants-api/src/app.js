@@ -2,8 +2,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-// const aws = require('aws-sdk')
-// const ses = new aws.SES()
 const mongo = require('./mongo')
 const _ = require('lodash')
 const upload = require('./upload')
@@ -75,32 +73,7 @@ app.get('/restaurants', adminCors, async (req, res) => {
   res.send(response)
 })
 
-// function generateEmailParams (email) {
-//   return {
-//     Source: 'scottie1984@gmail.com',
-//     Destination: { ToAddresses: [email] },
-//     ReplyToAddresses: ['scottie1984@gmail.com'],
-//     Message: {
-//       Body: {
-//         Text: {
-//           Charset: 'UTF-8',
-//           Data: 'Thanks for registering with LocoLoco - we will get back to you as soon as possible'
-//         }
-//       },
-//       Subject: {
-//         Charset: 'UTF-8',
-//         Data: 'Thanks for registering with LocoLoco!'
-//       }
-//     }
-//   }
-// }
-
-// function sendWelcomeEmail (email) {
-//   const emailParams = generateEmailParams(email)
-//   return ses.sendEmail(emailParams).promise()
-// }
-
-async function processFIles (inputFiles) {
+async function processFiles (inputFiles) {
   const files = {}
   if (inputFiles) {
     const keys = Object.keys(inputFiles)
@@ -115,17 +88,12 @@ async function processFIles (inputFiles) {
 const multipart = require('connect-multiparty')
 const multipartMiddleware = multipart()
 
-app.post('/restaurants/files', adminCors, multipartMiddleware, async (req, res) => {
-  const signupEmail = getEmail(req)
-  const files = await processFIles(req.files)
-  const data = {
-    signupEmail,
-    ...req.body,
-    ...files
-  }
-  await mongo.insertToRestaurants(data)()
+app.post('/restaurants/files/:id', adminCors, multipartMiddleware, hasAccessToRestaurant, async (req, res) => {
+  const id = req.params.id
+  const files = await processFiles(req.files)
+  await mongo.updateByIdToRestaurants({ $set: files })(id)
   res.send({
-    message: 'Restaurant files successfully'
+    message: 'Restaurant files added successfully'
   })
 })
 
@@ -136,7 +104,6 @@ app.post('/restaurants/create', adminCors, async (req, res) => {
     ...req.body
   }
   const { ops } = await mongo.insertToRestaurants(data)()
-  // await sendWelcomeEmail(signupEmail)
   res.send({
     message: 'Restaurant inserted successfully',
     doc: ops[0]
