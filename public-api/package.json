@@ -20,7 +20,7 @@
     "serverless-apigw-binary": "0.4.4"
   },
   "devDependencies": {
-    "mocha": "7.1.1",
+    "mocha": "10.2.0",
     "serverless-offline": "6.1.2",
     "sinon": "9.0.1",
     "standard": "14.3.3",
